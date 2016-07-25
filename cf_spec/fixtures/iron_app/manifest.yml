@@ -1,5 +1,0 @@
----
-applications:
-- name: iron-app
-  instances: 1
-  command: iron_app

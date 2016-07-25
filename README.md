@@ -4,13 +4,11 @@ Super simple proof of concept online buildpack for Rust on Cloud Foundry.
 
 ### Getting it onto your Cloud Foundry
 
-
 ```bash
 $ pwd
 /Users/pivotal/workspace/rust-buildpack
 
-$ cf_exec buildpack-packager --uncached
-Uncached buildpack created and saved as /Users/pivotal/workspace/rust-buildpack/rust_buildpack-v0.0.1.zip with a size of 120K
+$ zip -r rust-buildpack-v0.0.1.zip ./bin
 
 $ cf create-buildpack rust-buildpack rust_buildpack-v0.0.1.zip 1
 Creating buildpack rust-buildpack...
@@ -21,8 +19,9 @@ Done uploading
 OK
 ```
 
-### Running the Test Suite
-
+### Running a test app
 ```bash
-BUNDLE_GEMFILE=cf.Gemfile buildpack-build --uncached
+$ cd ./cf_spec/fixtures/rust_app_hello_world_server
+
+$ cf push
 ```

@@ -1,7 +1,0 @@
-[package]
-name = "iron_app"
-version = "0.1.0"
-authors = ["James Wen <jrw2175@columbia.edu>"]
-
-[dependencies]
-iron = "*"
