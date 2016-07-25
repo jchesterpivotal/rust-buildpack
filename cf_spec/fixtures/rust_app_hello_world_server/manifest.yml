@@ -2,3 +2,4 @@
 applications:
 - name: rust-app
   instances: 1
+  disk_quota: 2048M

@@ -3,27 +3,46 @@
 
 set -o errexit
 set -o pipefail
+set -o xtrace
 
 mkdir -p "$1" "$2"
-build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
+build_dir=$(cd "$1/" && pwd)
+cache_dir=$(cd "$2/" && pwd)
 env_dir=$3
-buildpack=$(cd "$(dirname $0)/.." && pwd)
+buildpack_dir=$(cd "$(dirname $0)/.." && pwd)
 arch=$(uname -m|tr A-Z a-z)
 
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
-# Install Rust
-echo "-----> Installing latest stable Rust from rustup"
-rust_installation_url="https://sh.rustup.rs"
-$CURL -sSf $rust_installation_url | sh -s -- -y --default-toolchain stable 2>&1
+if [ $buildpack_dir/compile-extensions/bin/is_cached ]; then
+    # install from $buildpack_dir/dependencies
+    echo "-----> Installing Rust from cached buildpack"
+    dependency_url="file:///Users/pivotal/workspace/rust-output/rust-1.10.0.tgz"
+    local_rust_file_url=$($buildpack_dir/compile-extensions/bin/translate_dependency_url $dependency_url)
+
+    tmp_dir="/tmp/rust_install"
+    mkdir -p $tmp_dir
+
+    pushd $tmp_dir
+        rust_file="rust.tgz"
+        curl $local_rust_file_url -o $rust_file
+        tar -xvf $rust_file
+        export PATH="$PWD/usr/local/bin:$PATH"
+    popd
+else
+    # Install Rust from internet
+    echo "-----> Installing latest stable Rust from rustup"
+    rust_installation_url="https://sh.rustup.rs"
+    $CURL -sSf $rust_installation_url | sh -s -- -y --default-toolchain stable 2>&1
+fi
+
 export PATH=$HOME/.cargo/bin/:$PATH
 
 # Compile Rust program
 echo "-----> Running 'cargo build'"
-cd $build
+cd $build_dir
 cargo build --release 2>&1
 
 # Ensure compiled Rust program is in runtime environment PATH
-mkdir -p $build/.profile.d
-echo 'export PATH=$PATH:$HOME/target/release' > $build/.profile.d/rust.sh
+mkdir -p $build_dir/.profile.d
+echo 'export PATH=$PATH:/app/target/release:/app/usr/local/bin' > $build_dir/.profile.d/rust.sh

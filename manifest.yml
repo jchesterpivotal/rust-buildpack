@@ -1,0 +1,22 @@
+---
+language: rust
+url_to_dependency_map:
+  - match: rust-(\d+\.\d+\.\d+)
+    name: rust
+    version: $1
+
+dependencies:
+  - name: rust
+    version: 1.10.0
+    uri: file:///Users/pivotal/workspace/rust-output/rust-1.10.0.tgz
+    md5: 1460714f450f3f1d2ff2032acdcbb436
+    cf_stacks:
+      - cflinuxfs2
+
+exclude_files:
+- ".git/"
+- ".gitignore"
+- ".gitmodules"
+- cf_spec/
+- target/
+- "*.zip"
