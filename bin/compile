@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
-set -eo pipefail
+set -o errexit
+set -o pipefail
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
@@ -13,11 +14,13 @@ arch=$(uname -m|tr A-Z a-z)
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 # Install Rust
+echo "-----> Installing latest stable Rust from rustup"
 rust_installation_url="https://sh.rustup.rs"
 $CURL -sSf $rust_installation_url | sh -s -- -y --default-toolchain stable 2>&1
 export PATH=$HOME/.cargo/bin/:$PATH
 
 # Compile Rust program
+echo "-----> Running 'cargo build'"
 cd $build
 cargo build --release 2>&1
 

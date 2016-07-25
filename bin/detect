@@ -1,12 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
 # bin/detect <build-dir>
-set -e
 
-build=$(cd "$1/" && pwd)
+build_dir=ARGV[0]
 
-if test -n "$(find "$build" -type f -name '*.rs' | sed 1q)"
-then
-  echo Rust
+if File.exist?(File.join(build_dir,'Cargo.toml'))
+  puts 'Rust'
 else
   exit 1
-fi
+end

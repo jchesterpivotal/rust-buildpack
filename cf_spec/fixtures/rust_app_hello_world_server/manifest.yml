@@ -2,4 +2,3 @@
 applications:
 - name: rust-app
   instances: 1
-  command: hello_world

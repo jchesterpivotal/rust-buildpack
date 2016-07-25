@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
 # bin/release <build-dir>
 
-echo "--- {}"
+require 'yaml'
+
+release_run_command = {}
+release_run_command['default_process_types'] = {'web' =>'cargo run'}
+puts release_run_command.to_yaml
