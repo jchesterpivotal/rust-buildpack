@@ -14,7 +14,8 @@ arch=$(uname -m|tr A-Z a-z)
 
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
-if [ $buildpack_dir/compile-extensions/bin/is_cached ]; then
+# the cached buildpack will contain a dependencies directory
+if [ -d "$buildpack_dir/dependencies" ]; then
     # install from $buildpack_dir/dependencies
     echo "-----> Installing Rust from cached buildpack"
     dependency_url="file:///Users/pivotal/workspace/rust-output/rust-1.10.0.tgz"
